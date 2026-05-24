@@ -1,0 +1,7 @@
+interface:
+  display_name: "DSM Task Scheduler"
+  short_description: "Create Synology DSM UI-visible scheduled tasks."
+  default_prompt: "Use $dsm-task-scheduler to create a Synology DSM Task Scheduler job that is visible in Control Panel and writes logs."
+
+policy:
+  allow_implicit_invocation: true
