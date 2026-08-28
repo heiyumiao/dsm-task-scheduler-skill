@@ -116,7 +116,9 @@ def replace_existing_named_task(task_dir: Path, name: str) -> None:
 
 
 def backup_path(path: Path) -> Path:
-    backup = path.with_suffix(path.suffix + ".bak.codex_" + datetime.now().strftime("%Y%m%d%H%M%S"))
+    backup = path.with_suffix(
+        path.suffix + ".bak.dsm-task-scheduler_" + datetime.now().strftime("%Y%m%d%H%M%S")
+    )
     shutil.copy2(path, backup)
     return backup
 

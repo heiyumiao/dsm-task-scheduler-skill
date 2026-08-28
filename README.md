@@ -1,6 +1,6 @@
 # DSM Task Scheduler Skill
 
-一个用于创建、检查和修复群晖 DSM 计划任务的 Codex Skill。它面向需要在
+一个用于创建、检查和修复群晖 DSM 计划任务的 Agent Skill。它面向需要在
 **控制面板 → 任务计划** 中可见的任务，而不是仅写入 `/etc/crontab` 的隐藏任务。
 
 仓库附带的 Python helper 会生成 DSM 7 的 `.task` 文件、同步任务计划，并尽量保留
@@ -15,34 +15,46 @@
 - 调用 `synoschedtask --sync`，让任务出现在 DSM 控制面板中
 - 支持启用/禁用任务及邮件通知字段
 
+## 兼容性
+
+核心的 [`SKILL.md`](SKILL.md) 和 Python helper 不依赖特定 AI 产品，可供任何支持
+加载 Markdown skill 指令的 coding agent 使用。`agents/openai.yaml` 只是 Codex/OpenAI
+客户端使用的可选界面元数据；不使用该客户端时可以忽略。
+
+Python helper 也可以完全脱离 AI agent，直接在 NAS 上运行。
+
 ## 仓库结构
 
 ```text
 .
 ├── SKILL.md
 ├── agents/
-│   └── openai.yaml
+│   └── openai.yaml                # 可选的 Codex/OpenAI 界面元数据
 └── scripts/
     └── create_dsm_scheduled_task.py
 ```
 
 ## 安装
 
-将仓库克隆到 Codex 的个人 skills 目录：
+将仓库克隆或复制到你的 agent 能够发现的 skills 目录。具体目录和调用语法以所用
+agent 的文档为准。
+
+例如，Codex 的个人安装方式为：
 
 ```bash
 git clone https://github.com/heiyumiao/dsm-task-scheduler-skill.git \
   ~/.codex/skills/dsm-task-scheduler
 ```
 
-重新启动或刷新 Codex 后，即可通过 `$dsm-task-scheduler` 调用。
+重新启动或刷新 Codex 后，即可通过 `$dsm-task-scheduler` 调用。其他 agent 如果不支持
+自动发现 skills，也可以把 `SKILL.md` 作为项目指令或上下文提供给它。
 
 ## 使用方式
 
-可以直接对 Codex 说明目标，例如：
+可以直接向 agent 说明目标，例如：
 
 ```text
-使用 $dsm-task-scheduler，在我的群晖上创建一个工作日 16:35 运行的任务，
+使用 dsm-task-scheduler skill，在我的群晖上创建一个工作日 16:35 运行的任务，
 任务需要显示在 DSM 控制面板中，并把输出写入日志。
 ```
 
@@ -75,7 +87,7 @@ ssh nas "sudo python3 /tmp/create_dsm_scheduled_task.py \
 
 - 操作前先确认 SSH 目标，避免修改错误的 NAS。
 - helper 默认会按同名任务进行替换；旧 `.task` 文件会保存为
-  `*.bak.codex_<timestamp>`。
+  `*.bak.dsm-task-scheduler_<timestamp>`。
 - 从原始 crontab 迁移时，只删除完全相同的重复任务，避免误删系统条目。
 - 建议先手动执行一次 wrapper script，确认权限和日志正常后再依赖计划任务。
 - 不要把 NAS 地址、用户名、私钥、Token、通知邮箱或真实任务命令提交到仓库。
@@ -98,4 +110,4 @@ helper 写入任务文件后执行：
 sudo /usr/syno/bin/synoschedtask --sync
 ```
 
-更多字段说明和 Codex 执行流程见 [`SKILL.md`](SKILL.md)。
+更多字段说明和 agent 执行流程见 [`SKILL.md`](SKILL.md)。
