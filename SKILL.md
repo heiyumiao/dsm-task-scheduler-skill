@@ -39,11 +39,11 @@ sudo grep -n "synoschedtask --run id=<id>" /etc/crontab
 Copy the helper to the NAS and run it with `sudo python3`:
 
 ```bash
-scp scripts/create_dsm_scheduled_task.py ttlocal:/tmp/
-ssh ttlocal "printf '%s\n' '/path/to/run_task.sh' > /tmp/dsm_task_cmd.txt"
-ssh ttlocal "sudo python3 /tmp/create_dsm_scheduled_task.py \
-  --name futu-ashare-daily \
-  --owner codex_ssh \
+scp scripts/create_dsm_scheduled_task.py nas:/tmp/
+ssh nas "printf '%s\n' '/volume1/apps/example/run_task.sh' > /tmp/dsm_task_cmd.txt"
+ssh nas "sudo python3 /tmp/create_dsm_scheduled_task.py \
+  --name example-daily-task \
+  --owner taskuser \
   --type weekly \
   --weekdays Mon,Tue,Wed,Thu,Fri \
   --hour 16 \
